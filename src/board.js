@@ -1,3 +1,4 @@
+// by Jenny Leung
 export class Board {
   constructor(numberOfRows, numberOfColumns, numberOfBombs) {
     this._numberOfBombs = numberOfBombs;
@@ -8,12 +9,6 @@ export class Board {
   get playerBoard() {
     return this._playerBoard;
   }
-
-  // not in instructions
-  /*get bombBoard() {
-    return this._bombBoard;
-  }*/
-
 
   flipTile(rowIndex, columnIndex) {
     if (this._playerBoard[rowIndex][columnIndex] !== ' ') {
@@ -27,6 +22,7 @@ export class Board {
   }
 
   getNumberOfNeighborBombs(rowIndex, columnIndex) {
+    // neignbor tile positions
     const neighborOffsets = [
       [-1, -1],
       [-1, 0],
@@ -40,33 +36,31 @@ export class Board {
     const numberOfRows = this._bombBoard.length;
     const numberOfColumns = this._bombBoard[0].length;
     let numberOfBombs = 0;
+    // check each neighbor tile, if has bomb, add to numberOfBombs
     neighborOffsets.forEach(offset => {
       const neighborRowIndex = rowIndex + offset[0];
       const neighborColumnIndex = columnIndex + offset[1];
       if ((neighborRowIndex >= 0) && (neighborRowIndex < numberOfRows) && (neighborColumnIndex >= 0) && (neighborColumnIndex < numberOfColumns)) {
-        //if ((neighborRowIndex >= 0) && (neighborRowIndex < this._numberOfRows) && (neighborColumnIndex >= 0) && (neighborColumnIndex < this._numberOfColumns)) {
         if (this._bombBoard[neighborRowIndex][neighborColumnIndex] === 'B') {
-          //this._numberOfBombs++;
           numberOfBombs++;
         }
       }
     });
-    //return this._numberOfBombs;
+    // return total number of bombs surrounding current tile
     return numberOfBombs;
   }
 
   hasSafeTiles() {
+    // if numberOfTiles left equal to numberOfBombs
+    // means no bomb is hit and safe tiles are all flipped, player won
+    // hence, while numberOfTiles decrease and still not equal to numberOfBombs,
+    // there are safe tiles to continue playing
     return this._numberOfTiles !== this._numberOfBombs;
   }
 
   print() {
     console.log(this._playerBoard.map(row => row.join(' | ')).join('\n'));
   }
-  // not in instructions
-  /*printBombBoard() {
-    console.log(this._bombBoard.map(row => row.join(' | ')).join('\n'));
-  }*/
-
 
   static generatePlayerBoard(numberOfRows, numberOfColumns) {
     let board = [];
@@ -86,8 +80,6 @@ export class Board {
       let row = [];
       for (var colIndex = 0; colIndex < numberOfColumns; colIndex++) {
         row.push(null);
-        // original above, this is correction for alignment, does not affect adding 'B'
-        //row.push(' ');
       }
       board.push(row);
     }
@@ -98,6 +90,8 @@ export class Board {
       let randomRowIndex = Math.floor(Math.random() * numberOfRows);
       let randomColumnIndex = Math.floor(Math.random() * numberOfColumns);
       if (board[randomRowIndex][randomColumnIndex] !== 'B') {
+        // if position not already have bomb,
+        // place bomb and increase numberOfBombsPlaced
         board[randomRowIndex][randomColumnIndex] = 'B';
         numberOfBombsPlaced++;
       }
